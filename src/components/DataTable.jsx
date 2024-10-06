@@ -3,13 +3,13 @@ import React, { useEffect, useState } from 'react';
 function DataTable() {
     const [products, setProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortOrder, setSortOrder] = useState('asc'); // 'asc' or 'desc'
+    const [sortOrder, setSortOrder] = useState('asc'); 
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 3;
 
     useEffect(() => {
         fetchRecords();
-    }, []); 
+    }, []);
 
     const fetchRecords = () => {
         fetch('https://fakestoreapi.com/products')
@@ -26,9 +26,9 @@ function DataTable() {
     // Sorting the filtered products
     const sortedProducts = filteredProducts.sort((a, b) => {
         if (sortOrder === 'asc') {
-            return a.price - b.price; // Sort by price ascending
+            return a.price - b.price; 
         } else {
-            return b.price - a.price; // Sort by price descending
+            return b.price - a.price; 
         }
     });
 
@@ -41,7 +41,7 @@ function DataTable() {
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
-        setCurrentPage(1); // Reset to first page when searching
+        setCurrentPage(1);
     };
 
     const changeSortOrder = () => {
@@ -56,28 +56,37 @@ function DataTable() {
 
     return (
         <>
+            <nav className="navbar bg-body-tertiary">
+                <div className="container">
+                    <a className="navbar-brand">Navbar</a>
+                    <div className="d-flex">
+                        <input
+                            className="form-control me-2"
+                            type="search"
+                            placeholder="Search"
+                            aria-label="Search"
+                            value={ searchTerm }
+                            onChange={ handleSearch }
+                        />
+                    </div>
+                </div>
+            </nav>
             <div className="container">
-                <input
-                    type="text"
-                    placeholder="Search by title..."
-                    value={searchTerm}
-                    onChange={handleSearch}
-                    className="form-control mb-3"
-                />
-                <button onClick={changeSortOrder} className="btn btn-secondary mb-3">
-                    Sort by Price: {sortOrder === 'asc' ? 'Ascending' : 'Descending'}
+                <h1 className='text-center my-3'>Products</h1>
+                <button onClick={ changeSortOrder } className="btn btn-secondary mb-3">
+                    Sort by Price: { sortOrder === 'asc' ? 'Low to high' : 'High to low' }
                 </button>
                 <div className="row">
-                    {currentItems.length > 0 ? (
+                    { currentItems.length > 0 ? (
                         currentItems.map((item) => (
-                            <div className="col-md-4" key={item.id}>
+                            <div className="col-md-4" key={ item.id }>
                                 <div className="card mb-3">
-                                    <img src={item.image} className="card-img-top object-fit-contain" height='300px'  alt={item.title} />
+                                    <img src={ item.image } className="card-img-top object-fit-contain" height='400px' alt={ item.title } />
                                     <div className="card-body">
-                                        <h5 className="card-title">{item.title}</h5>
-                                        <p className="card-text" >{item.description}</p>
+                                        <h5 className="card-title">{ item.title }</h5>
+                                        <p className="card-text" >{ item.description }</p>
                                         <p className="card-text">
-                                            <small className="text-body-secondary">Price: ${item.price}</small>
+                                            <strong className="text-body-secondary">Price: ₹{ item.price *80 }</strong>
                                         </p>
                                     </div>
                                 </div>
@@ -87,22 +96,22 @@ function DataTable() {
                         <div className="col-12">
                             <p>No results found</p>
                         </div>
-                    )}
+                    ) }
                 </div>
                 <div>
-                    <button onClick={() => changePage(currentPage - 1)} hidden={currentPage === 1}>
+                    <button onClick={ () => changePage(currentPage - 1) } hidden={ currentPage === 1 }>
                         Previous
                     </button>
-                    {Array.from({ length: totalPages }, (_, index) => (
+                    { Array.from({ length: totalPages }, (_, index) => (
                         <button
-                            key={index + 1}
-                            onClick={() => changePage(index + 1)}
-                            disabled={currentPage === index + 1}
+                            key={ index + 1 }
+                            onClick={ () => changePage(index + 1) }
+                            disabled={ currentPage === index + 1 }
                         >
-                            {index + 1}
+                            { index + 1 }
                         </button>
-                    ))}
-                    <button onClick={() => changePage(currentPage + 1)} hidden={currentPage === totalPages}>
+                    )) }
+                    <button onClick={ () => changePage(currentPage + 1) } hidden={ currentPage === totalPages }>
                         Next
                     </button>
                 </div>
