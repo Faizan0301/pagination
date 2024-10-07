@@ -90,7 +90,7 @@ function DataTable() {
                                         <h5 className="card-title text-truncate">{ item.title }</h5>
                                         <p className="card-text description" >{ item.description }</p>
                                         <p className="card-text">
-                                            <strong className="text-body-secondary">Price: ₹{ item.price * 80 }</strong>
+                                            <strong className="text-body-secondary">Price: ₹{ Math.round(item.price * 80) }</strong>
                                         </p>
                                     </div>
                                 </div>
