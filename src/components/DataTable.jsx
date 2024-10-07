@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 function DataTable() {
     const [products, setProducts] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortOrder, setSortOrder] = useState('asc'); 
+    const [sortOrder, setSortOrder] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 3;
 
@@ -23,21 +23,24 @@ function DataTable() {
         product.category.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Sorting the filtered products
-    const sortedProducts = filteredProducts.sort((a, b) => {
-        if (sortOrder === 'asc') {
-            return a.price - b.price; 
-        } else {
-            return b.price - a.price; 
-        }
-    });
-
     // Pagination logic
-    const totalPages = Math.ceil(sortedProducts.length / itemsPerPage);
-    const currentItems = sortedProducts.slice(
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    const currentItems = filteredProducts.slice(
         (currentPage - 1) * itemsPerPage,
         currentPage * itemsPerPage
     );
+
+    // Sorting the filtered products
+    currentItems.sort((a, b) => {
+        if (sortOrder === 'Low to higt') {
+            return a.price - b.price;
+        } else if (sortOrder === 'High to low') {
+            return b.price - a.price;
+        }
+        else {
+            return
+        }
+    });
 
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
@@ -45,12 +48,13 @@ function DataTable() {
     };
 
     const changeSortOrder = () => {
-        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+        setSortOrder(sortOrder === 'Low to higt' ? 'High to low' : 'Low to higt');
     };
 
     const changePage = (pageNumber) => {
         if (pageNumber > 0 && pageNumber <= totalPages) {
             setCurrentPage(pageNumber);
+            setSortOrder('')
         }
     };
 
@@ -73,20 +77,20 @@ function DataTable() {
             </nav>
             <div className="container">
                 <h1 className='text-center my-3'>Products</h1>
-                <button onClick={ changeSortOrder } className="btn btn-secondary mb-3">
-                    Sort by Price: { sortOrder === 'asc' ? 'Low to high' : 'High to low' }
+                <button onClick={ changeSortOrder } className="btn btn-primary mb-3">
+                    Sort by Price: { sortOrder === '' ? '' : sortOrder }
                 </button>
                 <div className="row">
                     { currentItems.length > 0 ? (
                         currentItems.map((item) => (
-                            <div className="col-md-4" key={ item.id }>
+                            <div className="col-md-4 d-flex" key={ item.id }>
                                 <div className="card mb-3">
                                     <img src={ item.image } className="card-img-top object-fit-contain" height='400px' alt={ item.title } />
                                     <div className="card-body">
-                                        <h5 className="card-title">{ item.title }</h5>
-                                        <p className="card-text" >{ item.description }</p>
+                                        <h5 className="card-title text-truncate">{ item.title }</h5>
+                                        <p className="card-text description" >{ item.description }</p>
                                         <p className="card-text">
-                                            <strong className="text-body-secondary">Price: ₹{ item.price *80 }</strong>
+                                            <strong className="text-body-secondary">Price: ₹{ item.price * 80 }</strong>
                                         </p>
                                     </div>
                                 </div>
@@ -98,20 +102,26 @@ function DataTable() {
                         </div>
                     ) }
                 </div>
-                <div>
-                    <button onClick={ () => changePage(currentPage - 1) } hidden={ currentPage === 1 }>
+                <div className='text-center mt-4'>
+                    <button className='btn btn-outline-primary mx-1' onClick={ () => changePage(currentPage - 1) } hidden={ currentPage === 1 }>
                         Previous
                     </button>
-                    { Array.from({ length: totalPages }, (_, index) => (
-                        <button
-                            key={ index + 1 }
-                            onClick={ () => changePage(index + 1) }
-                            disabled={ currentPage === index + 1 }
-                        >
-                            { index + 1 }
-                        </button>
-                    )) }
-                    <button onClick={ () => changePage(currentPage + 1) } hidden={ currentPage === totalPages }>
+                    { [...Array(3)].map((_, index) => {
+                        const pageNumber = currentPage - 1 + index;
+                        if (pageNumber >= 1 && pageNumber<=totalPages){
+                            return (
+                                <button
+                                     className='btn btn-outline-primary mx-1'
+                                    key={ index + 1 }
+                                    onClick={ () => changePage(pageNumber) }
+                                    disabled={ currentPage == pageNumber }
+                                >
+                                    { pageNumber }
+                                </button>
+                            )
+                        }
+                    }) }
+                    <button className='btn btn-outline-primary mx-1' onClick={ () => changePage(currentPage + 1) } hidden={ currentPage === totalPages }>
                         Next
                     </button>
                 </div>
