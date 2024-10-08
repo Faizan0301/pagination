@@ -45,6 +45,7 @@ function DataTable() {
     const handleSearch = (e) => {
         setSearchTerm(e.target.value);
         setCurrentPage(1);
+        setSortOrder('')
     };
 
     const changeSortOrder = () => {
