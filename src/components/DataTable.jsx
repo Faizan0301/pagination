@@ -20,7 +20,8 @@ function DataTable() {
 
     // Filtering based on search term
     const filteredProducts = products.filter(product =>
-        product.category.toLowerCase().includes(searchTerm.toLowerCase())
+        product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     // Pagination logic
